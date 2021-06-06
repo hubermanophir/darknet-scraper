@@ -10,7 +10,7 @@ const getAll = async (req, res) => {
     },
   });
   const $ = cheerio.load(response.data);
-  const rows = [];
+  const posts = [];
   $(".col-sm-12").each((i, row) => {
     const obj = {};
     $(row)
@@ -66,31 +66,31 @@ const getAll = async (req, res) => {
         }
       });
 
-    rows.push(obj);
+    posts.push(obj);
   });
-  rows.shift();
-  rows.pop();
+  posts.shift();
+  posts.pop();
 
-  rows.forEach(async (row) => {
-    const savedPost = await Post.find({ content: row.content });
-    // console.log(savedPost)
+  for (const post of posts) {
+    const savedPost = await Post.find({
+      content: post.content,
+      title: post.title,
+    });
     if (savedPost.length === 0) {
-      savedPost;
-      const post = new Post({
-        author: row.author,
-        title: row.title,
-        date: new Date(row.date),
-        content: row.content,
-      });
       try {
-        await post.save();
+        await Post.create({
+          author: post.author,
+          title: post.title,
+          date: new Date(post.date),
+          content: post.content,
+        });
       } catch (err) {
-        res.status(500).json({ message: `Internal error ${err}` });
+        console.log({ message: err });
       }
     }
-  });
+  }
 
-  res.status(200).json({ message: "Scraping done" });
+  res.json({ message: "success" });
 };
 
 const sendClient = async (req, res) => {
