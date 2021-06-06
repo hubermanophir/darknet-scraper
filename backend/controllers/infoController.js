@@ -1,5 +1,6 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
+const Post = require("../schemas/Post");
 
 const getAll = async (req, res) => {
   const response = await axios.get("http://nzxj65x32vh2fkhk.onion/all", {
@@ -15,7 +16,6 @@ const getAll = async (req, res) => {
     $(row)
       .children()
       .each((j, element) => {
-        // console.log(j);
         switch (j) {
           case 0:
             const str = $(element)
@@ -70,8 +70,36 @@ const getAll = async (req, res) => {
   });
   rows.shift();
   rows.pop();
-  console.log(rows);
-  res.send(response.data);
+
+  rows.forEach(async (row) => {
+    const savedPost = await Post.find({ content: row.content });
+    // console.log(savedPost)
+    if (savedPost.length === 0) {
+      savedPost;
+      const post = new Post({
+        author: row.author,
+        title: row.title,
+        date: new Date(row.date),
+        content: row.content,
+      });
+      try {
+        await post.save();
+      } catch (err) {
+        res.status(500).json({ message: `Internal error ${err}` });
+      }
+    }
+  });
+
+  res.status(200).json({ message: "Scraping done" });
 };
 
-module.exports = { getAll };
+const sendClient = async (req, res) => {
+  const savedPosts = await Post.find({});
+  if (savedPosts.length === 0) {
+    res.status(200).json({ message: "No posts found" });
+  } else {
+    res.status(400).json(savedPosts);
+  }
+};
+
+module.exports = { getAll, sendClient };
