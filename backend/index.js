@@ -1,10 +1,17 @@
-const express = require("express");
-const app = require("./app");
 const mongoose = require("mongoose");
+const app = require("./app");
+const server = require("http").createServer(app);
+global.io = require("socket.io")(server, {
+  cors: { origin: "http://localhost:3000", methods: ["GET", "POST"] },
+});
+io.on("connection", (socket) => {
+  console.log("socket connected");
+});
+
 const PORT = 8080;
 const url = "mongodb://127.0.0.1:27017/scraperdb";
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   mongoose
     .connect(url, {
       useNewUrlParser: true,
@@ -21,3 +28,5 @@ app.listen(PORT, () => {
 
   console.log(`listening on port ${PORT}`);
 });
+
+module.exports = { io };
