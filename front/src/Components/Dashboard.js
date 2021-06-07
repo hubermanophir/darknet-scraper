@@ -7,22 +7,22 @@ import { io } from "socket.io-client";
 export default function Dashboard() {
   const { currentUser } = useAuth();
   const { logout } = useAuth();
-  // useEffect(() => {
+  useEffect(() => {
 
-  //   const obj = {
-  //     name: currentUser.displayName,
-  //     email: currentUser.email,
-  //     uid: currentUser.uid,
-  //   };
-  //   (async () => {
-  //     try {
-  //       await axios.post("http://localhost:8080/api/user/new", obj);
-  //       console.log(obj);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   })();
-  // }, []);
+    const obj = {
+      name: currentUser.displayName,
+      email: currentUser.email,
+      uid: currentUser.uid,
+    };
+    (async () => {
+      try {
+        await axios.post("http://localhost:8080/api/user/new", obj);
+        console.log(obj);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
 
   const [scrapeSucceeded, setScrapeSucceeded] = useState(false);
   useEffect(() => {

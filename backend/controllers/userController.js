@@ -53,4 +53,6 @@ const changeInterval = async (req, res) => {
   );
 };
 
+const doesExist = async (req, res) => {};
+
 module.exports = { postUser, changeKeywords, changeInterval };
