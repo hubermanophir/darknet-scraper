@@ -53,6 +53,14 @@ const changeInterval = async (req, res) => {
   );
 };
 
-const doesExist = async (req, res) => {};
+const doesExist = async (req, res) => {
+  const { uid } = req.body;
+  const savedUser = await User.findOne({ id: uid });
+  if (!savedUser) {
+    return res.json({ message: false });
+  } else {
+    return res.json({ message: true });
+  }
+};
 
-module.exports = { postUser, changeKeywords, changeInterval };
+module.exports = { postUser, changeKeywords, changeInterval, doesExist };

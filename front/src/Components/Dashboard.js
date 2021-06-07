@@ -5,33 +5,55 @@ import axios from "axios";
 import { io } from "socket.io-client";
 
 export default function Dashboard() {
+  const [scrapeSucceeded, setScrapeSucceeded] = useState(false);
+  const [posts, setPosts] = useState([]);
   const { currentUser } = useAuth();
   const { logout } = useAuth();
-  useEffect(() => {
 
-    const obj = {
-      name: currentUser.displayName,
-      email: currentUser.email,
-      uid: currentUser.uid,
-    };
+  useEffect(() => {
     (async () => {
-      try {
-        await axios.post("http://localhost:8080/api/user/new", obj);
-        console.log(obj);
-      } catch (error) {
-        console.log(error);
+      const bool = await axios.post(
+        "http://localhost:8080/api/user/exist",
+        currentUser.uid
+      );
+      if (!bool.data.message) {
+        console.log("user does not exist");
+        const obj = {
+          name: currentUser.displayName,
+          email: currentUser.email,
+          uid: currentUser.uid,
+        };
+        try {
+          await axios.post("http://localhost:8080/api/user/new", obj);
+          console.log(obj);
+        } catch (error) {
+          console.log(error);
+        }
       }
     })();
-  }, []);
-
-  const [scrapeSucceeded, setScrapeSucceeded] = useState(false);
-  useEffect(() => {
     const newSocket = io("http://localhost:8080");
     newSocket.on("didWork", (data) => {
-      data === "success" ? setScrapeSucceeded(true) : setScrapeSucceeded(false);
+      console.log(data);
+      if (data.message === "success") {
+        setScrapeSucceeded(true);
+        const temp = [...posts];
+        temp.concat(data.newArray);
+
+        if (temp.length > posts.length) {
+          setPosts(temp);
+        }
+      } else {
+        setScrapeSucceeded(false);
+      }
     });
     return () => newSocket.close();
   }, []);
+
+  useEffect(() => {
+    if (posts.length !== 0) {
+      console.log("new Post");
+    }
+  }, [posts]);
 
   return (
     <div>

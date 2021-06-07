@@ -91,9 +91,30 @@ const getAll = async () => {
         }
       }
     }
-    io.sockets.emit("didWork", "success");
+
+    const savedPosts = await Post.find().sort({ _id: -1 }).limit(15);
+    const normalizedSavedPosts = savedPosts.map((post) => {
+      return {
+        title: post.title,
+        content: post.content,
+        date: post.date,
+        author: post.author,
+      };
+    });
+
+    const newArray = uniqueArray(posts, normalizedSavedPosts);
+    const successMessageObj = {
+      newArray,
+      message: "success",
+      numberOfNew: newArray.length,
+    };
+
+    io.sockets.emit("didWork", successMessageObj);
   } catch (error) {
-    io.sockets.emit("didWork", "fail");
+    const failMessageObj = {
+      message: "fail",
+    };
+    io.sockets.emit("didWork", failMessageObj);
   }
 };
 // const scrape = async (req, res) => {
