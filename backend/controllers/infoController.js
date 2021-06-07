@@ -1,8 +1,9 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
+const differenceBy = require("lodash/differenceBy");
 const Post = require("../schemas/Post");
 
-const getAll = async (req, res) => {
+const getAll = async () => {
   const response = await axios.get("http://nzxj65x32vh2fkhk.onion/all", {
     proxy: {
       host: "localhost",
@@ -70,11 +71,11 @@ const getAll = async (req, res) => {
   });
   posts.shift();
   posts.pop();
-
   for (const post of posts) {
     const savedPost = await Post.find({
       content: post.content,
       title: post.title,
+      date: new Date(post.date),
     });
     if (savedPost.length === 0) {
       try {
@@ -87,11 +88,25 @@ const getAll = async (req, res) => {
       } catch (err) {
         console.log({ message: err });
       }
-      res.status(200).json({ message: "New Post" });
     }
   }
 
-  res.json({ message: "success" });
+  const savedPosts = await Post.find({});
+  return savedPosts;
+};
+
+const scrape = async (req, res) => {
+  const savedPosts = await Post.find({});
+  const newPosts = await getAll();
+  if (newPosts.length !== savedPosts.length) {
+    const newArray = uniqueArray(newPosts, savedPosts);
+    return res.status(200).json({
+      message: `You have ${newPosts.length - savedPosts.length} posts`,
+      newPosts: newArray,
+    });
+  } else {
+    return res.status(200).json({ message: "No new posts" });
+  }
 };
 
 const sendClient = async (req, res) => {
@@ -99,8 +114,13 @@ const sendClient = async (req, res) => {
   if (savedPosts.length === 0) {
     res.status(200).json({ message: "No posts found" });
   } else {
-    res.status(400).json(savedPosts);
+    const sorted = savedPosts.sort((a, b) => b.date - a.date);
+    res.status(400).json(sorted);
   }
 };
 
-module.exports = { getAll, sendClient };
+function uniqueArray(newArray, oldArray) {
+  return differenceBy(newArray, oldArray, "id");
+}
+
+module.exports = { sendClient, scrape };
