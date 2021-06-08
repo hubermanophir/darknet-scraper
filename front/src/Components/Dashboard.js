@@ -3,15 +3,21 @@ import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 
 import { io } from "socket.io-client";
+import PrimarySearchAppBar from "./PrimarySearchAppBar";
+import { Button } from "@material-ui/core";
+import Posts from "./Posts";
+import SwipeableTemporaryDrawer from "./SwipeableTemporaryDrawer";
 
 export default function Dashboard() {
   const [scrapeSucceeded, setScrapeSucceeded] = useState(false);
-  const [user, setsUser] = useState();
+  const [newPostsNumber, setNewPostsNumber] = useState(0);
   const [posts, setPosts] = useState([]);
+  const [user, setsUser] = useState();
   const { currentUser } = useAuth();
   const { logout } = useAuth();
 
   useEffect(() => {
+    //Checks if user exists and changes user state
     (async () => {
       const bool = await axios.post("http://localhost:8080/api/user/exist", {
         uid: currentUser.uid,
@@ -40,18 +46,15 @@ export default function Dashboard() {
         setsUser(savedUser.data);
       }
     })();
+
+    //Socket io client config
     const newSocket = io("http://localhost:8080");
     newSocket.on("didWork", (data) => {
       newSocket.emit("keywords", currentUser.uid);
       console.log(data);
       if (data.message === "success") {
         setScrapeSucceeded(true);
-        const temp = [...posts];
-        temp.concat(data.newArray);
-
-        if (temp.length > posts.length) {
-          setPosts(temp);
-        }
+        setNewPostsNumber((prev) => (prev += data.numberOfNew));
       } else {
         setScrapeSucceeded(false);
       }
@@ -59,23 +62,20 @@ export default function Dashboard() {
     return () => newSocket.close();
   }, []);
 
-  useEffect(() => {
-    if (posts.length !== 0) {
-      console.log("new Post");
-    }
-    // console.log(posts);
-  }, [posts]);
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
+  // useEffect(() => {
+  //   if (newPostsNumber.length !== 0) {
+  //     console.log("new Post");
+  //   }
+  // }, [newPostsNumber]);
 
   return (
     <div>
-      <h1>Dashboard</h1>
-      <input type="text" />
-      <button onClick={logout}>Logout</button>
-      {scrapeSucceeded ? <h1>Success</h1> : <h1>Fail</h1>}
+      <PrimarySearchAppBar
+        scrapeSucceeded={scrapeSucceeded}
+        newPostsNumber={newPostsNumber}
+        SwipeableTemporaryDrawer={SwipeableTemporaryDrawer}
+      />
+      <Posts setPosts={setPosts} posts={posts} />
     </div>
   );
 }

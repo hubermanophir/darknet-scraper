@@ -79,7 +79,6 @@ const getAll = async () => {
       const savedPost = await Post.find({
         content: post.content,
         title: post.title,
-        date: new Date(post.date),
       });
       if (savedPost.length === 0) {
         try {
