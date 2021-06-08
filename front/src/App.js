@@ -4,9 +4,6 @@ import AuthProvider from "./context/AuthContext";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import PrivateRoute from "./Components/PrivateRoute";
 import SignUp from "./Components/SignUp";
-import { io } from "socket.io-client";
-
-import { useEffect, useState } from "react";
 
 function App() {
   return (

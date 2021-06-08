@@ -90,19 +90,25 @@ const getAll = async () => {
           throw new Error(err);
         }
       }
+      post.date = `${new Date(post.date)}`;
     }
 
-    const savedPosts = await Post.find().sort({ _id: -1 }).limit(15);
+    const savedPosts = await Post.find().sort({ date: -1 }).limit(15);
     const normalizedSavedPosts = savedPosts.map((post) => {
       return {
         title: post.title,
         content: post.content,
-        date: post.date,
+        date: `${post.date}`,
         author: post.author,
       };
     });
 
+    // console.log(normalizedSavedPosts);
+    // console.log("------------------------------------------------------------");
+    // console.log(posts);
+
     const newArray = uniqueArray(posts, normalizedSavedPosts);
+
     const successMessageObj = {
       newArray,
       message: "success",
@@ -117,6 +123,7 @@ const getAll = async () => {
     io.sockets.emit("didWork", failMessageObj);
   }
 };
+
 // const scrape = async (req, res) => {
 //   const savedPosts = await Post.find({});
 //   const newPosts = await getAll();
@@ -142,7 +149,7 @@ const sendClient = async (req, res) => {
 };
 
 function uniqueArray(newArray, oldArray) {
-  return differenceBy(newArray, oldArray, "id");
+  return differenceBy(newArray, oldArray, "title");
 }
 
 module.exports = { sendClient, getAll };

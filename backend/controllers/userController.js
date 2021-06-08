@@ -10,7 +10,8 @@ const postUser = async (req, res) => {
         email: body.email,
         _id: body.uid,
       });
-      return res.status(200).json({ message: "User created successfully" });
+      const saved = await User.findOne({ _id: body.uid });
+      return res.status(200).json(saved);
     } catch (error) {
       return res.status(500).json({ message: "Internal server error" });
     }
@@ -55,7 +56,8 @@ const changeInterval = async (req, res) => {
 
 const doesExist = async (req, res) => {
   const { uid } = req.body;
-  const savedUser = await User.findOne({ id: uid });
+  const savedUser = await User.findOne({ _id: uid });
+  console.log(savedUser)
   if (!savedUser) {
     return res.json({ message: false });
   } else {
@@ -63,4 +65,20 @@ const doesExist = async (req, res) => {
   }
 };
 
-module.exports = { postUser, changeKeywords, changeInterval, doesExist };
+const getUser = async (req, res) => {
+  const { uid } = req.body;
+  try {
+    const savedUser = await User.findOne({ _id: uid });
+    return res.status(200).json(savedUser);
+  } catch (error) {
+    return res.status(500).json({ message: "Couldn't get user" });
+  }
+};
+
+module.exports = {
+  postUser,
+  changeKeywords,
+  changeInterval,
+  doesExist,
+  getUser,
+};
