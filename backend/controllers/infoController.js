@@ -72,6 +72,9 @@ const getAll = async () => {
     });
     posts.shift();
     posts.pop();
+
+    const newPosts = [];
+
     for (const post of posts) {
       const savedPost = await Post.find({
         content: post.content,
@@ -86,33 +89,17 @@ const getAll = async () => {
             date: new Date(post.date),
             content: post.content,
           });
+          newPosts.push(post);
         } catch (err) {
           throw new Error(err);
         }
       }
-      post.date = `${new Date(post.date)}`;
     }
 
-    const savedPosts = await Post.find().sort({ date: -1 }).limit(15);
-    const normalizedSavedPosts = savedPosts.map((post) => {
-      return {
-        title: post.title,
-        content: post.content,
-        date: `${post.date}`,
-        author: post.author,
-      };
-    });
-
-    // console.log(normalizedSavedPosts);
-    // console.log("------------------------------------------------------------");
-    // console.log(posts);
-
-    const newArray = uniqueArray(posts, normalizedSavedPosts);
-
     const successMessageObj = {
-      newArray,
+      newPosts,
       message: "success",
-      numberOfNew: newArray.length,
+      numberOfNew: newPosts.length,
     };
 
     io.sockets.emit("didWork", successMessageObj);
