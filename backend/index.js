@@ -6,7 +6,13 @@ global.io = require("socket.io")(server, {
 });
 io.on("connection", (socket) => {
   console.log("socket connected");
+  socket.on("keywords", (data) => {
+    console.log(data);
+  });
 });
+// io.on("keywords", (data) => {
+//   console.log(data);
+// });
 
 const PORT = 8080;
 const url = "mongodb://127.0.0.1:27017/scraperdb";

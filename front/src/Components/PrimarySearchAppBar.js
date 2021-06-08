@@ -86,16 +86,15 @@ const useStyles = makeStyles((theme) => ({
 export default function PrimarySearchAppBar({
   scrapeSucceeded,
   newPostsNumber,
+  setPostsVisible,
+  setAlertConfigVisible,
+  setCustomPostsVisible,
 }) {
   const { currentUser } = useAuth();
   const { logout } = useAuth();
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
-  useEffect(() => {
-    console.log("New post");
-  }, [newPostsNumber]);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -170,7 +169,11 @@ export default function PrimarySearchAppBar({
     <div className={classes.grow}>
       <AppBar position="static">
         <Toolbar>
-          <SwipeableTemporaryDrawer />
+          <SwipeableTemporaryDrawer
+            setPostsVisible={setPostsVisible}
+            setAlertConfigVisible={setAlertConfigVisible}
+            setCustomPostsVisible={setCustomPostsVisible}
+          />
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -203,7 +206,7 @@ export default function PrimarySearchAppBar({
             </IconButton>
 
             <IconButton aria-label="health-check-notification" color="inherit">
-              <Badge badgeContent={newPostsNumber} color="secondary">
+              <Badge badgeContent={0} color="secondary">
                 <LocalHospitalIcon
                   style={{
                     fill: scrapeSucceeded ? "green" : "red",

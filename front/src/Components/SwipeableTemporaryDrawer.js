@@ -12,6 +12,8 @@ import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
 import { IconButton } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
+import SettingsIcon from "@material-ui/icons/Settings";
+import AllInboxIcon from "@material-ui/icons/AllInbox";
 
 const useStyles = makeStyles({
   list: {
@@ -22,13 +24,35 @@ const useStyles = makeStyles({
   },
 });
 
-export default function SwipeableTemporaryDrawer() {
+export default function SwipeableTemporaryDrawer({
+  setPostsVisible,
+  setAlertConfigVisible,
+  setCustomPostsVisible,
+}) {
   const classes = useStyles();
   const [state, setState] = React.useState({
     left: false,
   });
 
   const toggleDrawer = (anchor, open) => (event) => {
+    switch (event.target.innerText) {
+      case "Alert Config":
+        setPostsVisible(false);
+        setAlertConfigVisible(true);
+        setCustomPostsVisible(false);
+        break;
+      case "All Posts":
+        setPostsVisible(true);
+        setAlertConfigVisible(false);
+        setCustomPostsVisible(false);
+        break;
+      case "Custom Posts":
+        setPostsVisible(false);
+        setAlertConfigVisible(false);
+        setCustomPostsVisible(true);
+        break;
+    }
+
     if (
       event &&
       event.type === "keydown" &&
@@ -50,26 +74,22 @@ export default function SwipeableTemporaryDrawer() {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
+        {["Alert Config", "All Posts", "Custom Posts"].map((text, index) => (
           <ListItem button key={text}>
             <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              {index === 0 ? (
+                <SettingsIcon />
+              ) : index === 1 ? (
+                <AllInboxIcon />
+              ) : (
+                <AllInboxIcon />
+              )}
             </ListItemIcon>
             <ListItemText primary={text} />
           </ListItem>
         ))}
       </List>
       <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
     </div>
   );
 
@@ -78,8 +98,7 @@ export default function SwipeableTemporaryDrawer() {
       {["left"].map((anchor) => (
         <React.Fragment key={anchor}>
           <IconButton>
-            {/* <Button onClick={toggleDrawer(anchor, true)}>{anchor}</Button> */}
-            <MenuIcon onClick={toggleDrawer(anchor, true)}/>
+            <MenuIcon onClick={toggleDrawer(anchor, true)} />
           </IconButton>
           <SwipeableDrawer
             anchor={anchor}

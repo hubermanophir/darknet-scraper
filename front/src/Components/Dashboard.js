@@ -7,10 +7,15 @@ import PrimarySearchAppBar from "./PrimarySearchAppBar";
 import { Button } from "@material-ui/core";
 import Posts from "./Posts";
 import SwipeableTemporaryDrawer from "./SwipeableTemporaryDrawer";
+import CustomPosts from "./CustomPosts";
+import AlertConfig from "./AlertConfig";
 
 export default function Dashboard() {
   const [scrapeSucceeded, setScrapeSucceeded] = useState(false);
   const [newPostsNumber, setNewPostsNumber] = useState(0);
+  const [postsVisible, setPostsVisible] = useState(true);
+  const [alertConfigVisible, setAlertConfigVisible] = useState(false);
+  const [customPostsVisible, setCustomPostsVisible] = useState(false);
   const [posts, setPosts] = useState([]);
   const [user, setsUser] = useState();
   const { currentUser } = useAuth();
@@ -46,11 +51,9 @@ export default function Dashboard() {
         setsUser(savedUser.data);
       }
     })();
-
     //Socket io client config
     const newSocket = io("http://localhost:8080");
     newSocket.on("didWork", (data) => {
-      newSocket.emit("keywords", currentUser.uid);
       console.log(data);
       if (data.message === "success") {
         setScrapeSucceeded(true);
@@ -62,11 +65,9 @@ export default function Dashboard() {
     return () => newSocket.close();
   }, []);
 
-  // useEffect(() => {
-  //   if (newPostsNumber.length !== 0) {
-  //     console.log("new Post");
-  //   }
-  // }, [newPostsNumber]);
+  useEffect(() => {
+    console.log("New Post");
+  }, [newPostsNumber]);
 
   return (
     <div>
@@ -74,8 +75,19 @@ export default function Dashboard() {
         scrapeSucceeded={scrapeSucceeded}
         newPostsNumber={newPostsNumber}
         SwipeableTemporaryDrawer={SwipeableTemporaryDrawer}
+        setPostsVisible={setPostsVisible}
+        setAlertConfigVisible={setAlertConfigVisible}
+        setCustomPostsVisible={setCustomPostsVisible}
       />
-      <Posts setPosts={setPosts} posts={posts} />
+      {postsVisible && (
+        <Posts
+          setPosts={setPosts}
+          posts={posts}
+          setNewPostsNumber={setNewPostsNumber}
+        />
+      )}
+      {alertConfigVisible && <AlertConfig user={user} />}
+      {customPostsVisible && <CustomPosts />}
     </div>
   );
 }

@@ -57,7 +57,6 @@ const changeInterval = async (req, res) => {
 const doesExist = async (req, res) => {
   const { uid } = req.body;
   const savedUser = await User.findOne({ _id: uid });
-  console.log(savedUser)
   if (!savedUser) {
     return res.json({ message: false });
   } else {

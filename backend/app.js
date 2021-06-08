@@ -16,4 +16,5 @@ const scrapeTask = cron.schedule("* * * * *", scraperFunction, {
 scrapeTask.start();
 
 
+
 module.exports = app;
