@@ -202,6 +202,9 @@ export default function PrimarySearchAppBar({
             <MenuListComposition
               matchArray={matchArray}
               setMatchArray={setMatchArray}
+              setPostsVisible={setPostsVisible}
+              setAlertConfigVisible={setAlertConfigVisible}
+              setCustomPostsVisible={setCustomPostsVisible}
             />
 
             <IconButton aria-label="health-check-notification" color="inherit">
@@ -214,7 +217,7 @@ export default function PrimarySearchAppBar({
                 />
               </Badge>
             </IconButton>
-            <IconButton
+            {/* <IconButton
               edge="end"
               aria-label="account of current user"
               aria-controls={menuId}
@@ -223,7 +226,7 @@ export default function PrimarySearchAppBar({
               color="inherit"
             >
               <AccountCircle />
-            </IconButton>
+            </IconButton> */}
           </div>
           <div className={classes.sectionMobile}>
             <IconButton

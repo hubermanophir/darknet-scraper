@@ -3,7 +3,9 @@ function searchKeywords(keywords, posts) {
   const matchArray = [];
   keywords.forEach((keyword) => {
     for (const post of posts) {
-      const wordsArray = JSON.stringify(post).split(" ");
+      const wordsArray = JSON.stringify(post)
+        .replace(/[^a-zA-Z]/g, " ")
+        .split(" ");
       if (wordsArray.length > 0) {
         wordsArray.forEach((word) => {
           const cleanWord = word.replace(/[^a-zA-Z]/g, "");

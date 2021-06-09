@@ -19,7 +19,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MenuListComposition({ matchArray, setMatchArray }) {
+export default function MenuListComposition({
+  matchArray,
+  setMatchArray,
+  setPostsVisible,
+  setAlertConfigVisible,
+  setCustomPostsVisible,
+}) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
@@ -29,16 +35,15 @@ export default function MenuListComposition({ matchArray, setMatchArray }) {
   };
 
   const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
-      return;
-    }
-
     setOpen(false);
   };
 
   const alertHandler = () => {
     handleClose();
     setMatchArray([]);
+    setPostsVisible(false);
+    setAlertConfigVisible(false);
+    setCustomPostsVisible(true);
   };
 
   function handleListKeyDown(event) {
@@ -104,7 +109,7 @@ export default function MenuListComposition({ matchArray, setMatchArray }) {
                           <MenuItem
                             key={`menu item ${i}`}
                             onClick={alertHandler}
-                          >{`${match.matchPercent * 100}% Match to "${
+                          >{`${Number(match.matchPercent) * 100}% Match to "${
                             match.keyword
                           }"`}</MenuItem>
                         );

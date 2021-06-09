@@ -18,7 +18,6 @@ export default function Dashboard() {
   const [alertConfigVisible, setAlertConfigVisible] = useState(false);
   const [customPostsVisible, setCustomPostsVisible] = useState(false);
   const [matchArray, setMatchArray] = useState([]);
-  const [newCustomPosts, setNewCustomPosts] = useState([]);
   const [newPostsArray, setNewPostsArray] = useState([]);
   const [posts, setPosts] = useState([]);
   const [user, setsUser] = useState();
@@ -79,6 +78,7 @@ export default function Dashboard() {
   useEffect(() => {
     console.log("New Post");
     if (postsVisible) {
+      // setNewPostsArray([]);
       setNewPostsNumber(0);
     }
   }, [newPostsNumber]);
@@ -89,7 +89,10 @@ export default function Dashboard() {
         const matches = searchKeywords(user.keywords, newPostsArray);
         const temp = [...matchArray];
         if (matches.length > 0) {
-          temp.concat(matches);
+          console.log(matches);
+          matches.forEach((match) => {
+            temp.push(match);
+          });
         }
         setMatchArray(temp);
       }, user.searchInterval * 60000);
@@ -116,7 +119,7 @@ export default function Dashboard() {
         />
       )}
       {alertConfigVisible && <AlertConfig user={user} setsUser={setsUser} />}
-      {customPostsVisible && <CustomPosts user={user} />}
+      {customPostsVisible && <CustomPosts user={user} posts={posts} />}
     </div>
   );
 }
