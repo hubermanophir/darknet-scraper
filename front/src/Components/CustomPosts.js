@@ -13,9 +13,7 @@ export default function CustomPosts({ posts, user }) {
         title: post.title,
       };
     });
-    const uniqueMatchArray = [
-      ...new Set(searchKeywords(user.keywords, postWithNoId)),
-    ];
+    const uniqueMatchArray = searchKeywords(user.keywords, postWithNoId);
     setCustomPosts(uniqueMatchArray);
   }, []);
 

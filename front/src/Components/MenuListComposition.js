@@ -25,6 +25,7 @@ export default function MenuListComposition({
   setPostsVisible,
   setAlertConfigVisible,
   setCustomPostsVisible,
+  setNewPostsArray,
 }) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -44,6 +45,7 @@ export default function MenuListComposition({
     setPostsVisible(false);
     setAlertConfigVisible(false);
     setCustomPostsVisible(true);
+    setNewPostsArray([]);
   };
 
   function handleListKeyDown(event) {
@@ -109,9 +111,9 @@ export default function MenuListComposition({
                           <MenuItem
                             key={`menu item ${i}`}
                             onClick={alertHandler}
-                          >{`${Number(match.matchPercent) * 100}% Match to "${
-                            match.keyword
-                          }"`}</MenuItem>
+                          >{`${Math.floor(
+                            Number(match.matchPercent) * 100
+                          )}% Match to "${match.keyword}"`}</MenuItem>
                         );
                       })}
                   </MenuList>

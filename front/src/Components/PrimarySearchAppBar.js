@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -19,6 +19,7 @@ import { useAuth } from "../context/AuthContext";
 import { Button } from "@material-ui/core";
 import SwipeableTemporaryDrawer from "./SwipeableTemporaryDrawer";
 import MenuListComposition from "./MenuListComposition";
+import debounce from "lodash.debounce";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -92,6 +93,8 @@ export default function PrimarySearchAppBar({
   setCustomPostsVisible,
   matchArray,
   setMatchArray,
+  setPosts,
+  setNewPostsArray,
 }) {
   const { currentUser } = useAuth();
   const { logout } = useAuth();
@@ -102,9 +105,14 @@ export default function PrimarySearchAppBar({
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const changeHandler = (e) => {
+    console.log(e.target.value);
   };
+
+  const debouncedChangeHandler = useCallback(debounce(changeHandler, 250), []);
+  // const handleProfileMenuOpen = (event) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
@@ -154,17 +162,6 @@ export default function PrimarySearchAppBar({
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
     </Menu>
   );
 
@@ -188,6 +185,7 @@ export default function PrimarySearchAppBar({
                 input: classes.inputInput,
               }}
               inputProps={{ "aria-label": "search" }}
+              onChange={debouncedChangeHandler}
             />
           </div>
           <div className={classes.grow} />
@@ -205,6 +203,7 @@ export default function PrimarySearchAppBar({
               setPostsVisible={setPostsVisible}
               setAlertConfigVisible={setAlertConfigVisible}
               setCustomPostsVisible={setCustomPostsVisible}
+              setNewPostsArray={setNewPostsArray}
             />
 
             <IconButton aria-label="health-check-notification" color="inherit">
@@ -217,16 +216,6 @@ export default function PrimarySearchAppBar({
                 />
               </Badge>
             </IconButton>
-            {/* <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton> */}
           </div>
           <div className={classes.sectionMobile}>
             <IconButton

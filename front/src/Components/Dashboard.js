@@ -21,6 +21,7 @@ export default function Dashboard() {
   const [newPostsArray, setNewPostsArray] = useState([]);
   const [posts, setPosts] = useState([]);
   const [user, setsUser] = useState();
+  const [socketData, setSocketData] = useState();
   const { currentUser } = useAuth();
 
   useEffect(() => {
@@ -29,8 +30,8 @@ export default function Dashboard() {
       const bool = await axios.post("http://localhost:8080/api/user/exist", {
         uid: currentUser.uid,
       });
+
       if (!bool.data.message) {
-        console.log("user does not exist");
         const obj = {
           name: currentUser.displayName,
           email: currentUser.email,
@@ -56,17 +57,17 @@ export default function Dashboard() {
     //Socket io client config
     const newSocket = io("http://localhost:8080");
     newSocket.on("didWork", (data) => {
-      console.log(data);
       if (data.message === "success") {
+        setSocketData(data);
         setScrapeSucceeded(true);
         setNewPostsNumber((prev) => (prev += data.numberOfNew));
         if (data.numberOfNew !== 0) {
-          const tempPosts = [...posts];
-          tempPosts.concat(data.newPosts);
-          setPosts(tempPosts);
-          const temp = [...newPostsArray];
-          temp.concat(data.newPosts);
-          setNewPostsArray(temp);
+          (async () => {
+            const res = await axios.get(
+              "http://localhost:8080/api/info/all_data"
+            );
+            setPosts(res.data);
+          })();
         }
       } else {
         setScrapeSucceeded(false);
@@ -76,12 +77,24 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    console.log("New Post");
     if (postsVisible) {
-      // setNewPostsArray([]);
       setNewPostsNumber(0);
+    } else if (customPostsVisible) {
+      setNewPostsArray([]);
     }
   }, [newPostsNumber]);
+
+  useEffect(() => {
+    if (socketData) {
+      if (socketData.numberOfNew > 0) {
+        const temp = [...newPostsArray];
+        socketData.newPosts.forEach((newPost) => {
+          temp.push(newPost);
+        });
+        setNewPostsArray(temp);
+      }
+    }
+  }, [socketData]);
 
   useEffect(() => {
     if (user) {
@@ -89,16 +102,15 @@ export default function Dashboard() {
         const matches = searchKeywords(user.keywords, newPostsArray);
         const temp = [...matchArray];
         if (matches.length > 0) {
-          console.log(matches);
           matches.forEach((match) => {
             temp.push(match);
           });
         }
         setMatchArray(temp);
-      }, user.searchInterval * 60000);
+      }, user.searchInterval * 1000);
       return () => clearInterval(interval);
     }
-  }, [user]);
+  }, [newPostsArray]);
   return (
     <div>
       <PrimarySearchAppBar
@@ -110,6 +122,8 @@ export default function Dashboard() {
         setCustomPostsVisible={setCustomPostsVisible}
         matchArray={matchArray}
         setMatchArray={setMatchArray}
+        setPosts={setPosts}
+        setNewPostsArray={setNewPostsArray}
       />
       {postsVisible && (
         <Posts
