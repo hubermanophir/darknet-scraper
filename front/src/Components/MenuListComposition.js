@@ -102,9 +102,6 @@ export default function MenuListComposition({
                     id="menu-list-grow"
                     onKeyDown={handleListKeyDown}
                   >
-                    {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
-                    <MenuItem onClick={handleClose}>My account</MenuItem>
-                    <MenuItem onClick={handleClose}>Logout</MenuItem> */}
                     {matchArray &&
                       matchArray.map((match, i) => {
                         return (

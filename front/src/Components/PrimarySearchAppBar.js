@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -20,6 +20,7 @@ import { Button } from "@material-ui/core";
 import SwipeableTemporaryDrawer from "./SwipeableTemporaryDrawer";
 import MenuListComposition from "./MenuListComposition";
 import debounce from "lodash.debounce";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -95,24 +96,41 @@ export default function PrimarySearchAppBar({
   setMatchArray,
   setPosts,
   setNewPostsArray,
+  posts,
 }) {
   const { currentUser } = useAuth();
   const { logout } = useAuth();
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [originalArray, setOriginalArray] = useState([]);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
+  useEffect(() => {
+    (async () => {
+      const res = await axios.get("http://localhost:8080/api/info/all_data");
+      setOriginalArray(res.data);
+    })();
+  }, []);
+
   const changeHandler = (e) => {
     console.log(e.target.value);
+    const regex = new RegExp(`${e.target.value}`, "i");
+    if (posts.length > 0) {
+      if (e.target.value !== "") {
+        const newArray = posts.filter(
+          (post) => post.content.match(regex) || post.title.match(regex)
+        );
+        setPosts(newArray);
+      } else {
+        setPosts(originalArray);
+      }
+    }
   };
 
   const debouncedChangeHandler = useCallback(debounce(changeHandler, 250), []);
-  // const handleProfileMenuOpen = (event) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);

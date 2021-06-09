@@ -124,6 +124,7 @@ export default function Dashboard() {
         setMatchArray={setMatchArray}
         setPosts={setPosts}
         setNewPostsArray={setNewPostsArray}
+        posts={posts}
       />
       {postsVisible && (
         <Posts
