@@ -1,4 +1,6 @@
 import { compareTwoStrings } from "string-similarity";
+import uniqueObjects from "unique-objects";
+
 function searchKeywords(keywords, posts) {
   // console.log(keywords)
   // console.log(posts)
@@ -14,18 +16,22 @@ function searchKeywords(keywords, posts) {
           const matchPercent = compareTwoStrings(keyword, cleanWord);
           if (matchPercent >= 0.65) {
             // console.log(matchPercent)
-            matchArray.push({ post, matchPercent, keyword });
+            matchArray.push({
+              post,
+              matchPercent,
+              keyword,
+              content: post.content,
+            });
           }
         });
       }
     }
   });
+
+  const uniqueMatchArray = uniqueObjects(matchArray, ["content"]);
   console.log(matchArray);
-  const uniqueMatchArray = [
-    ...new Map(matchArray.map((item) => [item.post.keyword, item])).values(),
-  ];
   console.log(uniqueMatchArray);
-  return matchArray;
+  return uniqueMatchArray;
 }
 
 export { searchKeywords };
