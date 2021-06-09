@@ -1,5 +1,47 @@
-*{
-    font-family: Arial, Helvetica, sans-serif;
-    margin-top: 0;
-    margin: 0;
+* {
+  font-family: Arial, Helvetica, sans-serif;
+  margin-top: 0;
+  margin: 0;
+}
+
+.post-div {
+  border-radius: 5px;
+  border-width: 1px;
+  margin: 2em 4em;
+  padding: 2em 2em;
+  position: relative;
+  background-color: hsla(0, 0%, 0%, 0.05);
+}
+.post-title {
+  text-align: center;
+  margin-bottom: 1em;
+  font-size: 1.5em;
+}
+.post-content {
+  overflow-wrap: break-word;
+  font-size: 1.2em;
+  text-align: center;
+  margin-bottom: 1em;
+}
+.post-author {
+  position: absolute;
+  left: 1em;
+  bottom: 1em;
+}
+.post-date {
+  position: absolute;
+  right: 1em;
+  bottom: 1em;
+}
+.post-keyword {
+  margin-bottom: 1em;
+  text-align: center;
+}
+.post-match-percent {
+  position: absolute;
+  left: 1em;
+  top: 1em;
+  padding: 1em 0.5em;
+  font-size: 1.13em;
+  border-radius: 25%;
 }

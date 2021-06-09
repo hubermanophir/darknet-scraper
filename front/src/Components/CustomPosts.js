@@ -24,13 +24,18 @@ export default function CustomPosts({ posts, user }) {
         customPosts.map((post) => {
           return (
             <div className="post-div">
+              <div className="post-keyword">{post.keyword}</div>
               <div className="post-title">{post.post.title}</div>
               <div className="post-content">{post.post.content}</div>
               <div className="post-author">{post.post.author}</div>
               <div className="post-date">{post.post.date}</div>
-              <div className="post-keyword">{post.keyword}</div>
-              <div className="post-match-percent">
-                {Math.floor(post.matchPercent * 100)}
+              <div
+                className={`post-match-percent`}
+                style={{
+                  backgroundColor: `hsla(0, 100%, 50%, ${post.matchPercent})`,
+                }}
+              >
+                {`${Math.floor(post.matchPercent * 100)}%`}
               </div>
             </div>
           );
