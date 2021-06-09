@@ -29,8 +29,6 @@ function searchKeywords(keywords, posts) {
   });
 
   const uniqueMatchArray = uniqueObjects(matchArray, ["content"]);
-  console.log(matchArray);
-  console.log(uniqueMatchArray);
   return uniqueMatchArray;
 }
 
