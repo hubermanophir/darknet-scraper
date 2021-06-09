@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api", api);
 
-const scrapeTask = cron.schedule("*/30 * * * * *", scraperFunction, {
+const scrapeTask = cron.schedule("*/2 * * * *", scraperFunction, {
   scheduled: false,
 });
 

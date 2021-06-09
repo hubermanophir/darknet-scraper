@@ -107,7 +107,7 @@ export default function Dashboard() {
           });
         }
         setMatchArray(temp);
-      }, user.searchInterval * 1000);
+      }, user.searchInterval * 60000);
       return () => clearInterval(interval);
     }
   }, [newPostsArray]);

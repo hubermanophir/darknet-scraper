@@ -116,7 +116,6 @@ export default function PrimarySearchAppBar({
   }, []);
 
   const changeHandler = (e) => {
-    console.log(e.target.value);
     const regex = new RegExp(`${e.target.value}`, "i");
     if (posts.length > 0) {
       if (e.target.value !== "") {
