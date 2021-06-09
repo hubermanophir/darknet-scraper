@@ -4,6 +4,11 @@
   margin: 0;
 }
 
+.keyword-posts-title {
+  text-align: center;
+  font-size: 3em;
+}
+
 .post-div {
   border-radius: 5px;
   border-width: 1px;
@@ -50,5 +55,60 @@
   padding: 1em 0.5em;
   font-size: 1.13em;
   border-radius: 25%;
+}
+
+.alert-config-title {
+  text-align: center;
+}
+
+.alert-config {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  margin: auto;
+}
+
+.interval-container {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  margin: auto;
+  position: relative;
+}
+
+.current-interval {
+  position: absolute;
+  width: 5em;
+  top: 1em;
+  margin-left: 1em;
+}
+
+.keyword-div-container {
+  margin-top: 2em;
+}
+
+.keywords-title {
+  text-align: center;
+  margin-bottom: 2em;
+}
+
+.keyword-input-container {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  margin: auto;
+  position: relative;
+}
+
+.add-keyword-button {
+  position: absolute;
+}
+
+.save-container-div {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  margin: auto;
+  margin-top: 2em;
 }
 /*# sourceMappingURL=app.css.map */

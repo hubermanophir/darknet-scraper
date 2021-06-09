@@ -19,7 +19,7 @@ export default function CustomPosts({ posts, user }) {
 
   return (
     <div>
-      <h1>custom posts</h1>
+      <h1 className="keyword-posts-title">Keyword Posts</h1>
       {customPosts &&
         customPosts.map((post) => {
           return (

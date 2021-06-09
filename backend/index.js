@@ -15,7 +15,7 @@ io.on("connection", (socket) => {
 // });
 
 const PORT = 8080;
-const url = "mongodb://127.0.0.1:27017/scraperdb";
+const url = "mongodb://mongo:27017/scraperdb";
 
 server.listen(PORT, () => {
   mongoose
