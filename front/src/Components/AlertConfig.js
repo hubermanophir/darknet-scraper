@@ -1,8 +1,9 @@
 import { Button, TextField } from "@material-ui/core";
+import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import ChipsArray from "./ChipsArray";
 
-export default function AlertConfig({ user }) {
+export default function AlertConfig({ user, setsUser }) {
   const [keywords, setKeywords] = useState(user.keywords);
   const [chipData, setChipData] = useState([]);
   const keywordRef = useRef();
@@ -18,8 +19,19 @@ export default function AlertConfig({ user }) {
     setChipData(keywordsWithKey);
   }, []);
 
+  const areEqual = (first, second) => {
+    if (first.length !== second.length) {
+      return false;
+    }
+    for (let i = 0; i < first.length; i++) {
+      if (!second.includes(first[i])) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   const addKeywordHandler = () => {
-    console.log(chipData.length);
     if (chipData.length > 0) {
       for (const chip of chipData) {
         if (chip.label === keywordRef.current.value) {
@@ -37,7 +49,32 @@ export default function AlertConfig({ user }) {
     temp.push(word);
     setChipData(temp);
   };
-
+  const saveHandler = async () => {
+    try {
+      const newArr = chipData.map((data) => {
+        return data.label;
+      });
+      const bool = areEqual(newArr, user.keywords);
+      const newUser = Object.assign({}, user);
+      if (!bool) {
+        await axios.put("http://localhost:8080/api/user/update_keywords", {
+          uid: user._id,
+          keywords: newArr,
+        });
+        newUser.keywords = newArr;
+      }
+      if (intervalRef.current.value !== "") {
+        await axios.put("http://localhost:8080/api/user/update_interval", {
+          uid: user._id,
+          interval: intervalRef.current.value,
+        });
+        newUser.searchInterval = intervalRef.current.value;
+      }
+      setsUser(newUser);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div>
       <h1>Alert config</h1>
@@ -57,7 +94,9 @@ export default function AlertConfig({ user }) {
       <TextField label="Keyword" inputRef={keywordRef} />
       <Button onClick={addKeywordHandler}>Add Keyword</Button>
       <div>
-        <Button variant="contained">Save Configuration</Button>
+        <Button onClick={saveHandler} variant="contained">
+          Save Configuration
+        </Button>
       </div>
     </div>
   );

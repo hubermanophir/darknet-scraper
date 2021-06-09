@@ -9,6 +9,7 @@ import Posts from "./Posts";
 import SwipeableTemporaryDrawer from "./SwipeableTemporaryDrawer";
 import CustomPosts from "./CustomPosts";
 import AlertConfig from "./AlertConfig";
+import { searchKeywords } from "../Utils";
 
 export default function Dashboard() {
   const [scrapeSucceeded, setScrapeSucceeded] = useState(false);
@@ -16,10 +17,12 @@ export default function Dashboard() {
   const [postsVisible, setPostsVisible] = useState(true);
   const [alertConfigVisible, setAlertConfigVisible] = useState(false);
   const [customPostsVisible, setCustomPostsVisible] = useState(false);
+  const [matchArray, setMatchArray] = useState([]);
+  const [newCustomPosts, setNewCustomPosts] = useState([]);
+  const [newPostsArray, setNewPostsArray] = useState([]);
   const [posts, setPosts] = useState([]);
   const [user, setsUser] = useState();
   const { currentUser } = useAuth();
-  const { logout } = useAuth();
 
   useEffect(() => {
     //Checks if user exists and changes user state
@@ -58,6 +61,14 @@ export default function Dashboard() {
       if (data.message === "success") {
         setScrapeSucceeded(true);
         setNewPostsNumber((prev) => (prev += data.numberOfNew));
+        if (data.numberOfNew !== 0) {
+          const tempPosts = [...posts];
+          tempPosts.concat(data.newPosts);
+          setPosts(tempPosts);
+          const temp = [...newPostsArray];
+          temp.concat(data.newPosts);
+          setNewPostsArray(temp);
+        }
       } else {
         setScrapeSucceeded(false);
       }
@@ -67,8 +78,24 @@ export default function Dashboard() {
 
   useEffect(() => {
     console.log("New Post");
+    if (postsVisible) {
+      setNewPostsNumber(0);
+    }
   }, [newPostsNumber]);
 
+  useEffect(() => {
+    if (user) {
+      const interval = setInterval(() => {
+        const matches = searchKeywords(user.keywords, newPostsArray);
+        const temp = [...matchArray];
+        if (matches.length > 0) {
+          temp.concat(matches);
+        }
+        setMatchArray(temp);
+      }, user.searchInterval * 60000);
+      return () => clearInterval(interval);
+    }
+  }, [user]);
   return (
     <div>
       <PrimarySearchAppBar
@@ -78,6 +105,8 @@ export default function Dashboard() {
         setPostsVisible={setPostsVisible}
         setAlertConfigVisible={setAlertConfigVisible}
         setCustomPostsVisible={setCustomPostsVisible}
+        matchArray={matchArray}
+        setMatchArray={setMatchArray}
       />
       {postsVisible && (
         <Posts
@@ -86,8 +115,8 @@ export default function Dashboard() {
           setNewPostsNumber={setNewPostsNumber}
         />
       )}
-      {alertConfigVisible && <AlertConfig user={user} />}
-      {customPostsVisible && <CustomPosts />}
+      {alertConfigVisible && <AlertConfig user={user} setsUser={setsUser} />}
+      {customPostsVisible && <CustomPosts user={user} />}
     </div>
   );
 }

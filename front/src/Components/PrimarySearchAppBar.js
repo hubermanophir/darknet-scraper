@@ -18,6 +18,7 @@ import LocalHospitalIcon from "@material-ui/icons/LocalHospital";
 import { useAuth } from "../context/AuthContext";
 import { Button } from "@material-ui/core";
 import SwipeableTemporaryDrawer from "./SwipeableTemporaryDrawer";
+import MenuListComposition from "./MenuListComposition";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -89,6 +90,8 @@ export default function PrimarySearchAppBar({
   setPostsVisible,
   setAlertConfigVisible,
   setCustomPostsVisible,
+  matchArray,
+  setMatchArray,
 }) {
   const { currentUser } = useAuth();
   const { logout } = useAuth();
@@ -145,7 +148,7 @@ export default function PrimarySearchAppBar({
     >
       <MenuItem>
         <IconButton aria-label="show 11 new notifications" color="inherit">
-          <Badge badgeContent={11} color="secondary">
+          <Badge badgeContent={matchArray.length} color="secondary">
             <NotificationsIcon />
           </Badge>
         </IconButton>
@@ -196,14 +199,10 @@ export default function PrimarySearchAppBar({
               : `${newPostsNumber} new posts`}
           </Typography>
           <div className={classes.sectionDesktop}>
-            <IconButton
-              aria-label="security-alert-notification"
-              color="inherit"
-            >
-              <Badge badgeContent={0} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
+            <MenuListComposition
+              matchArray={matchArray}
+              setMatchArray={setMatchArray}
+            />
 
             <IconButton aria-label="health-check-notification" color="inherit">
               <Badge badgeContent={0} color="secondary">

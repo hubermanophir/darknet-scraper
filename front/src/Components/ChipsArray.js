@@ -26,8 +26,6 @@ export default function ChipsArray({
 }) {
   const classes = useStyles();
 
-  console.log(chipData);
-
   const handleDelete = (chipToDelete) => () => {
     setChipData((chips) =>
       chips.filter((chip) => chip.key !== chipToDelete.key)
