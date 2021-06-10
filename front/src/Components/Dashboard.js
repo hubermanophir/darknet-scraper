@@ -119,6 +119,7 @@ export default function Dashboard() {
       return () => clearInterval(interval);
     }
   }, [newPostsArray]);
+  
   return (
     <div>
       <PrimarySearchAppBar
