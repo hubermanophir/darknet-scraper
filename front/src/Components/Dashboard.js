@@ -28,7 +28,7 @@ export default function Dashboard() {
     //Checks if user exists and changes user state
     (async () => {
       const bool = await axios.post(
-        `http://${location.hostname}:8080/api/user/exist`,
+        `http://localhost:8080/api/user/exist`,
         {
           uid: currentUser.uid,
         }
@@ -42,7 +42,7 @@ export default function Dashboard() {
         };
         try {
           const savedUser = await axios.post(
-            `http://${location.hostname}:8080/api/user/new`,
+            `http://localhost:8080/api/user/new`,
             obj
           );
           setsUser(savedUser.data);
@@ -51,7 +51,7 @@ export default function Dashboard() {
         }
       } else {
         const savedUser = await axios.post(
-          `http://${location.hostname}:8080/api/user/get_user`,
+          `http://localhost:8080/api/user/get_user`,
           { uid: currentUser.uid }
         );
         setsUser(savedUser.data);
@@ -69,7 +69,7 @@ export default function Dashboard() {
           if (data.numberOfNew !== 0) {
             (async () => {
               const res = await axios.get(
-                `http://${location.hostname}:8080/api/info/all_data`
+                `http://localhost:8080/api/info/all_data`
               );
               setPosts(res.data);
             })();
