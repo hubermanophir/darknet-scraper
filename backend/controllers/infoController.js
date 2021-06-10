@@ -7,7 +7,7 @@ const getAll = async () => {
   try {
     const response = await axios.get("http://nzxj65x32vh2fkhk.onion/all", {
       proxy: {
-        host: "localhost",
+        host: "127.0.0.1",
         port: 8118,
       },
     });

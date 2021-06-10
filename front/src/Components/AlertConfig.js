@@ -61,14 +61,14 @@ export default function AlertConfig({ user, setsUser }) {
       const bool = areEqual(newArr, user.keywords);
       const newUser = Object.assign({}, user);
       if (!bool) {
-        await axios.put(`http://${location.hostname}:8080/api/user/update_keywords`, {
+        await axios.put(`http://${window.location.hostname}:8080/api/user/update_keywords`, {
           uid: user._id,
           keywords: newArr,
         });
         newUser.keywords = newArr;
       }
       if (intervalRef.current.value !== "") {
-        await axios.put(`http://${location.hostname}:8080/api/user/update_interval`, {
+        await axios.put(`http://${window.location.hostname}:8080/api/user/update_interval`, {
           uid: user._id,
           interval: intervalRef.current.value,
         });

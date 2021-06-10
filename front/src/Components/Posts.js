@@ -5,7 +5,7 @@ import Post from "./Post";
 export default function Posts({ setPosts, posts, setNewPostsNumber }) {
   useEffect(() => {
     (async () => {
-      const res = await axios.get(`http://${location.hostname}:8080/api/info/all_data`);
+      const res = await axios.get(`http://${window.location.hostname}:8080/api/info/all_data`);
       setPosts(res.data);
     })();
     setNewPostsNumber(0)

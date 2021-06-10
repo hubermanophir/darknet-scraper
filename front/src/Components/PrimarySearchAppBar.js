@@ -110,7 +110,7 @@ export default function PrimarySearchAppBar({
 
   useEffect(() => {
     (async () => {
-      const res = await axios.get(`http://${location.hostname}:8080/api/info/all_data`);
+      const res = await axios.get(`http://${window.location.hostname}:8080/api/info/all_data`);
       setOriginalArray(res.data);
     })();
   }, []);
